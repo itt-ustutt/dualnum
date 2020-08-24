@@ -1,0 +1,19 @@
+[package]
+name = "num-hyperdual-python"
+version = "0.1.0"
+authors = ["Gernot Bauer <bauer@itt.uni-stuttgart.de>",
+           "Philipp Rehner <rehner@itt.uni-stuttgart.de>"]
+edition = "2018"
+
+[lib]
+name = "hyperdual"
+crate-type = ["cdylib"]
+
+# See more keys and their definitions at https://doc.rust-lang.org/cargo/reference/manifest.html
+
+[dependencies]
+num-hyperdual = { git = "https://github.com/ITT-University-of-Stuttgart/num-hyperdual" }
+
+[dependencies.pyo3]
+git = "https://github.com/PyO3/pyo3"
+features = ["extension-module"]

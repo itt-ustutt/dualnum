@@ -1,10 +1,10 @@
 use num_hyperdual::DualNum;
 use num_hyperdual::{Dual64 as D64, HyperDual64 as HD64};
-use pyo3::exceptions::PyTypeError;
+use pyo3::exceptions::TypeError;
 use pyo3::prelude::*;
 use pyo3::PyNumberProtocol;
 
-#[pyclass]
+#[pyclass(name=Dual64)]
 #[derive(Clone)]
 /// Dual number using 64-bit-floats.
 ///
@@ -18,18 +18,18 @@ use pyo3::PyNumberProtocol;
 /// >>> y = D64.from_re(2.0)
 /// >>> x + y
 /// 3 + 0ε
-pub struct Dual64 {
+pub struct PyDual64 {
     _data: D64,
 }
 
-impl From<D64> for Dual64 {
+impl From<D64> for PyDual64 {
     fn from(d: D64) -> Self {
         Self { _data: d }
     }
 }
 
 #[pymethods]
-impl Dual64 {
+impl PyDual64 {
     #[new]
     pub fn new(re: f64, eps: f64) -> Self {
         Self {
@@ -44,7 +44,7 @@ impl Dual64 {
     }
 }
 
-#[pyclass]
+#[pyclass(name=HyperDual64)]
 #[derive(Clone)]
 /// Hyper dual number using 64-bit-floats.
 ///
@@ -58,18 +58,18 @@ impl Dual64 {
 /// >>> y = HD64.from_re(2.0)
 /// >>> x + y
 /// 3 + 0ε1 + 0ε2 + 0ε1ε2
-pub struct HyperDual64 {
+pub struct PyHyperDual64 {
     _data: HD64,
 }
 
-impl From<HD64> for HyperDual64 {
+impl From<HD64> for PyHyperDual64 {
     fn from(hd: HD64) -> Self {
         Self { _data: hd }
     }
 }
 
 #[pymethods]
-impl HyperDual64 {
+impl PyHyperDual64 {
     #[new]
     pub fn new(re: f64, eps1: f64, eps2: f64, eps1eps2: f64) -> Self {
         Self {
@@ -369,7 +369,7 @@ macro_rules! impl_dual_num {
                         _data: lhs._data + r._data,
                     });
                 };
-                Err(PyErr::new::<PyTypeError, _>(format!("not implemented!")))
+                Err(PyErr::new::<TypeError, _>(format!("not implemented!")))
             }
 
             fn __radd__(&self, lhs: &PyAny) -> PyResult<Self> {
@@ -378,7 +378,7 @@ macro_rules! impl_dual_num {
                         _data: r + self._data,
                     });
                 };
-                Err(PyErr::new::<PyTypeError, _>(format!("not implemented!")))
+                Err(PyErr::new::<TypeError, _>(format!("not implemented!")))
             }
 
             fn __sub__(lhs: PyRef<'p, Self>, rhs: &PyAny) -> PyResult<Self> {
@@ -392,7 +392,7 @@ macro_rules! impl_dual_num {
                         _data: lhs._data - r._data,
                     });
                 };
-                Err(PyErr::new::<PyTypeError, _>(format!("not implemented!")))
+                Err(PyErr::new::<TypeError, _>(format!("not implemented!")))
             }
 
             fn __rsub__(&self, lhs: &PyAny) -> PyResult<Self> {
@@ -401,7 +401,7 @@ macro_rules! impl_dual_num {
                         _data: r - self._data,
                     });
                 };
-                Err(PyErr::new::<PyTypeError, _>(format!("not implemented!")))
+                Err(PyErr::new::<TypeError, _>(format!("not implemented!")))
             }
 
             fn __mul__(lhs: PyRef<'p, Self>, rhs: &PyAny) -> PyResult<Self> {
@@ -415,7 +415,7 @@ macro_rules! impl_dual_num {
                         _data: lhs._data * r._data,
                     });
                 };
-                Err(PyErr::new::<PyTypeError, _>(format!("not implemented!")))
+                Err(PyErr::new::<TypeError, _>(format!("not implemented!")))
             }
 
             fn __rmul__(&self, lhs: &PyAny) -> PyResult<Self> {
@@ -424,7 +424,7 @@ macro_rules! impl_dual_num {
                         _data: r * self._data,
                     });
                 };
-                Err(PyErr::new::<PyTypeError, _>(format!("not implemented!")))
+                Err(PyErr::new::<TypeError, _>(format!("not implemented!")))
             }
 
             fn __truediv__(lhs: PyRef<'p, Self>, rhs: &PyAny) -> PyResult<Self> {
@@ -438,7 +438,7 @@ macro_rules! impl_dual_num {
                         _data: lhs._data / r._data,
                     });
                 };
-                Err(PyErr::new::<PyTypeError, _>(format!("not implemented!")))
+                Err(PyErr::new::<TypeError, _>(format!("not implemented!")))
             }
 
             fn __rtruediv__(&self, lhs: &PyAny) -> PyResult<Self> {
@@ -447,7 +447,7 @@ macro_rules! impl_dual_num {
                         _data: r / self._data,
                     });
                 };
-                Err(PyErr::new::<PyTypeError, _>(format!("not implemented!")))
+                Err(PyErr::new::<TypeError, _>(format!("not implemented!")))
             }
 
             fn __pow__(lhs: &PyAny, rhs: &PyAny, _mod: Option<u32>) -> PyResult<Self> {
@@ -466,7 +466,7 @@ macro_rules! impl_dual_num {
                         _data: l._data.powd(&r._data),
                     });
                 };
-                Err(PyErr::new::<PyTypeError, _>(format!("not implemented!")))
+                Err(PyErr::new::<TypeError, _>(format!("not implemented!")))
             }
         }
 
@@ -479,8 +479,8 @@ macro_rules! impl_dual_num {
     };
 }
 
-impl_dual_num!(Dual64, D64);
-impl_dual_num!(HyperDual64, HD64);
+impl_dual_num!(PyDual64, D64);
+impl_dual_num!(PyHyperDual64, HD64);
 
 /// Hyperdual numbers.
 /// ==================
@@ -531,7 +531,7 @@ impl_dual_num!(HyperDual64, HD64);
 /// 4.497780053946162 + 4.053427893898621ε1 + 4.053427893898621ε2 + 9.463073681596605ε1ε2
 #[pymodule]
 fn hyperdual(_py: Python, m: &PyModule) -> PyResult<()> {
-    m.add_class::<Dual64>()?;
-    m.add_class::<HyperDual64>()?;
+    m.add_class::<PyDual64>()?;
+    m.add_class::<PyHyperDual64>()?;
     Ok(())
 }

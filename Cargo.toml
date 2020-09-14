@@ -15,6 +15,5 @@ crate-type = ["cdylib", "lib"]
 num-hyperdual = { git = "https://github.com/ITT-University-of-Stuttgart/num-hyperdual" }
 
 [dependencies.pyo3]
-# version = "0.12"
-git = "https://github.com/PyO3/pyo3"
+version = "0.12"
 features = ["extension-module"]

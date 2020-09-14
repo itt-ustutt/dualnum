@@ -141,8 +141,8 @@ impl From<PyHD_3_64> for HD3_64 {
 #[pymethods]
 impl PyHD_3_64 {
     #[new]
-    pub fn new(re: f64) -> Self {
-        HD3_64::new(re).into()
+    pub fn new(v: [f64; 4]) -> Self {
+        HD3_64::new(v).into()
     }
 }
 

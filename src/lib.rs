@@ -28,6 +28,12 @@ impl From<D64> for PyDual64 {
     }
 }
 
+impl From<PyDual64> for D64 {
+    fn from(d: PyDual64) -> Self {
+        d._data
+    }
+}
+
 #[pymethods]
 impl PyDual64 {
     #[new]
@@ -65,6 +71,12 @@ pub struct PyHyperDual64 {
 impl From<HD64> for PyHyperDual64 {
     fn from(hd: HD64) -> Self {
         Self { _data: hd }
+    }
+}
+
+impl From<PyHyperDual64> for HD64 {
+    fn from(d: PyHyperDual64) -> Self {
+        d._data
     }
 }
 
@@ -117,6 +129,12 @@ pub struct PyHD_3_64 {
 impl From<HD3_64> for PyHD_3_64 {
     fn from(hd: HD3_64) -> Self {
         Self { _data: hd }
+    }
+}
+
+impl From<PyHD_3_64> for HD3_64 {
+    fn from(d: PyHD_3_64) -> Self {
+        d._data
     }
 }
 

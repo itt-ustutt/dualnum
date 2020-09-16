@@ -1,0 +1,29 @@
+name: Rust
+
+on:
+  push:
+    branches: [ master ]
+  pull_request:
+    branches: [ master ]
+
+env:
+  CARGO_TERM_COLOR: always
+
+jobs:
+  build:
+    strategy:
+          matrix:
+            os: [ubuntu-latest]
+    runs-on: ${{ matrix.os }}
+    steps:
+      - uses: actions/checkout@v2
+      - uses: actions/setup-python@v2
+        with:
+          python-version: 3.5
+      - name: Install virtualenv and maturin
+        run: |
+          pip install virtualenv maturin
+          virtualenv venv
+          source venv/bin/activate
+      - name: Build artifacts
+        run: maturin build --release            

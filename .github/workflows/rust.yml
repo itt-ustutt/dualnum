@@ -26,4 +26,8 @@ jobs:
           virtualenv venv
           source venv/bin/activate
       - name: Build artifacts
-        run: maturin build --release            
+        run: maturin build --release
+      - uses: actions/upload-artifact@v2
+        with:
+          name: wheels
+          path: target/wheels/*.whl            

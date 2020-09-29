@@ -10,21 +10,54 @@ env:
   CARGO_TERM_COLOR: always
 
 jobs:
+  
   build:
+    runs-on: ${{ matrix.platform.os }}
     strategy:
-          matrix:
-            os: [ubuntu-latest]
-    runs-on: ${{ matrix.os }}
+      fail-fast: false  # If one platform fails, allow the rest to keep testing.
+      matrix:
+        platform: [ubuntu-latest]
+    
     steps:
       - uses: actions/checkout@v2
       - uses: actions/setup-python@v2
         with:
           python-version: 3.5
+      - uses: actions/setup-python@v2
+        with:
+          python-version: 3.6
+      - uses: actions/setup-python@v2
+        with:
+          python-version: 3.7
+      - uses: actions/setup-python@v2
+        with:
+          python-version: 3.8
       - name: Install virtualenv and maturin
         run: |
           pip install virtualenv maturin
           virtualenv venv
           source venv/bin/activate
+      - uses: actions-rs/toolchain@v1
+        id: rustup
+        with:
+          profile: minimal
+          toolchain: stable
+          override: true
+      - name: Cache cargo registry
+        uses: actions/cache@v2
+        with:
+          path: ~/.cargo/registry
+          key: ${{ runner.os }}-${{ steps.rustup.outputs.rustc_hash }}-registry-${{ hashFiles('**/Cargo.lock') }}
+      - name: Cache cargo index
+        uses: actions/cache@v2
+        with:
+          path: ~/.cargo/git
+          key: ${{ runner.os }}-${{ steps.rustup.outputs.rustc_hash }}-index-${{ hashFiles('**/Cargo.lock') }}
+      - name: Cache cargo build
+        uses: actions/cache@v2
+        with:
+          path: target
+          key: ${{ runner.os }}-${{ steps.rustup.outputs.rustc_hash }}-target-${{ hashFiles('**/Cargo.lock') }}
       - name: Build artifacts
         run: maturin build --release
       - uses: actions/upload-artifact@v2

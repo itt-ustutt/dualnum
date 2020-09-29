@@ -16,7 +16,7 @@ jobs:
     strategy:
       fail-fast: false  # If one platform fails, allow the rest to keep testing.
       matrix:
-        platform: [ubuntu-latest]
+        platform: [ubuntu-latest, macos-latest]
     
     steps:
       - uses: actions/checkout@v2

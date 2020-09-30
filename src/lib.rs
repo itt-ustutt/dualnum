@@ -1,14 +1,14 @@
-use dual::PyDual64;
-use hd3::{PyHD3Dual64, PyHD3_64};
-use hyperdual::{PyHyperDual64, PyHyperDualDual64};
+pub use dual::PyDual64;
+pub use hd3::{PyHD3Dual64, PyHD3_64};
+pub use hyperdual::{PyHyperDual64, PyHyperDualDual64};
 use num_hyperdual::*;
 use pyo3::exceptions::PyTypeError;
 use pyo3::number::PyNumberProtocol;
 use pyo3::prelude::*;
 
-mod dual;
-mod hd3;
-mod hyperdual;
+pub mod dual;
+pub mod hd3;
+pub mod hyperdual;
 #[macro_use]
 mod macros;
 

@@ -354,14 +354,14 @@ macro_rules! impl_dual_num {
             }
 
             fn __pow__(lhs: &PyAny, rhs: &PyAny, _mod: Option<u32>) -> PyResult<Self> {
-                if let (Ok(l), Ok(r)) = (lhs.extract::<Self>(), rhs.extract::<f64>()) {
-                    return Ok(Self {
-                        _data: l._data.powf(r),
-                    });
-                };
                 if let (Ok(l), Ok(r)) = (lhs.extract::<Self>(), rhs.extract::<i32>()) {
                     return Ok(Self {
                         _data: l._data.powi(r),
+                    });
+                };
+                if let (Ok(l), Ok(r)) = (lhs.extract::<Self>(), rhs.extract::<f64>()) {
+                    return Ok(Self {
+                        _data: l._data.powf(r),
                     });
                 };
                 if let (Ok(l), Ok(r)) = (lhs.extract::<Self>(), rhs.extract::<Self>()) {

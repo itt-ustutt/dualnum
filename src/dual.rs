@@ -1,7 +1,7 @@
 use num_hyperdual::*;
 use pyo3::prelude::*;
 
-#[pyclass(name=Dual64)]
+#[pyclass(name="Dual64")]
 #[derive(Clone)]
 /// Dual number using 64-bit-floats as fields.
 ///

@@ -2,7 +2,7 @@ use crate::dual::PyDual64;
 use num_hyperdual::*;
 use pyo3::prelude::*;
 
-#[pyclass(name=HD3_64)]
+#[pyclass(name="HD3_64")]
 #[derive(Clone)]
 /// Hyper dual number using 64-bit-floats.
 pub struct PyHD3_64 {
@@ -29,7 +29,7 @@ impl PyHD3_64 {
     }
 }
 
-#[pyclass(name=HD3Dual64)]
+#[pyclass(name="HD3Dual64")]
 #[derive(Clone)]
 /// Hyper dual number using 64-bit-floats.
 pub struct PyHD3Dual64 {

@@ -12,7 +12,7 @@ crate-type = ["cdylib", "lib"]
 # See more keys and their definitions at https://doc.rust-lang.org/cargo/reference/manifest.html
 
 [dependencies]
-num-hyperdual = { git = "https://github.com/ITT-University-of-Stuttgart/num-hyperdual" }
+num-hyperdual = { git = "https://github.com/ITT-University-of-Stuttgart/num-hyperdual", branch = "ndarray-014" }
 
 [dependencies.pyo3]
 version = "0.13"

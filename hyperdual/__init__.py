@@ -1,3 +1,3 @@
-"""This is hyerdual!"""
+"""This is hyperdual!"""
 
 from .hyperdual import *

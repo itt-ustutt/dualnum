@@ -9,18 +9,6 @@ pub struct PyHD3_64 {
     pub _data: HD3_64,
 }
 
-impl From<HD3_64> for PyHD3_64 {
-    fn from(hd: HD3_64) -> Self {
-        Self { _data: hd }
-    }
-}
-
-impl From<PyHD3_64> for HD3_64 {
-    fn from(d: PyHD3_64) -> Self {
-        d._data
-    }
-}
-
 #[pymethods]
 impl PyHD3_64 {
     #[new]
@@ -34,18 +22,6 @@ impl PyHD3_64 {
 /// Hyper dual number using 64-bit-floats.
 pub struct PyHD3Dual64 {
     pub _data: HD3Dual64,
-}
-
-impl From<HD3Dual64> for PyHD3Dual64 {
-    fn from(hd: HD3Dual64) -> Self {
-        Self { _data: hd }
-    }
-}
-
-impl From<PyHD3Dual64> for HD3Dual64 {
-    fn from(d: PyHD3Dual64) -> Self {
-        d._data
-    }
 }
 
 #[pymethods]

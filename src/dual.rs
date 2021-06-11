@@ -74,7 +74,7 @@ macro_rules! impl_derive {
             fn derive(x: &PyAny) -> PyResult<PyObject> {
                 Python::with_gil(|py| {
                     if let Ok(x) = x.extract::<f64>() {
-                        return Ok(PyCell::new(py, PyDual64::new(x, 1.0))?.to_object(py));
+                        return Ok(PyCell::new(py, PyDual64::from(Dual64::from_re(x).derive()))?.to_object(py));
                     };
                     $(
                         if let Ok(x) = x.extract::<[f64; $n]>() {

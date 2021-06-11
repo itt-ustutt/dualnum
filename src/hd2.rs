@@ -15,6 +15,18 @@ impl PyHD2_64 {
     fn new(eps: f64, v1: f64, v2: f64) -> Self {
         HD2::new(eps, v1, v2).into()
     }
+
+    #[getter]
+    /// First hyperdual part.
+    fn get_v1(&self) -> f64 {
+        self._data.v1
+    }
+
+    #[getter]
+    /// Second hyperdual part.
+    fn get_v2(&self) -> f64 {
+        self._data.v2
+    }
 }
 
 #[pyclass(name = "HD2Dual64")]
@@ -28,6 +40,18 @@ pub struct PyHD2Dual64 {
 impl PyHD2Dual64 {
     #[new]
     pub fn new(v0: PyDual64, v1: PyDual64, v2: PyDual64) -> Self {
-        HD2::new(v0.into(), v1.into(), v2.into()).into()
+        HD2::new(v0._data, v1._data, v2._data).into()
+    }
+
+    #[getter]
+    /// First hyperdual part.
+    fn get_v1(&self) -> PyDual64 {
+        self._data.v1.into()
+    }
+
+    #[getter]
+    /// Second hyperdual part.
+    fn get_v2(&self) -> PyDual64 {
+        self._data.v2.into()
     }
 }

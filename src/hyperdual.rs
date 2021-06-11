@@ -1,5 +1,5 @@
 use crate::dual::PyDual64;
-use crate::hd2::PyHD2_64;
+use crate::hd2::{PyHD2Dual64, PyHD2_64};
 use num_hyperdual::*;
 use pyo3::exceptions::PyTypeError;
 use pyo3::number::PyNumberProtocol;
@@ -184,6 +184,9 @@ macro_rules! impl_derive {
                             if let Ok(x) = x1.extract::<f64>() {
                                 return Ok(PyCell::new(py, PyHD2_64::from(HD2_64::from(x).derive()))?.to_object(py));
                             };
+                            if let Ok(x) = x1.extract::<PyDual64>() {
+                                return Ok(PyCell::new(py, PyHD2Dual64::from(HD2Dual64::from_re(x._data).derive()))?.to_object(py));
+                            };
                             $(
                                 if let Ok(x) = x1.extract::<[f64; $n]>() {
                                     let arr = StaticVec::new_vec(x).map(HyperDualN64::from).derive();
@@ -193,6 +196,13 @@ macro_rules! impl_derive {
                             )+
                         },
                         Some(x2) => {
+                            if let (Ok(x1), Ok(x2)) = (x1.extract::<f64>(), x2.extract::<f64>()) {
+                                let x1 = HyperDual64::from(x1).derive1();
+                                let x2 = HyperDual64::from(x2).derive2();
+                                let py_x1 = PyCell::new(py, PyHyperDual64::from(x1));
+                                let py_x2 = PyCell::new(py, PyHyperDual64::from(x2));
+                                return Ok((py_x1?, py_x2?).to_object(py));
+                            };
                             $(
                                 if let (Ok(x1), Ok(x2)) = (x1.extract::<f64>(), x2.extract::<[f64; $m]>()) {
                                     let x1 = HyperDualMN64::from(x1).derive1();

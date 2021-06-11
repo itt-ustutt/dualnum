@@ -18,7 +18,7 @@ macro_rules! impl_dual_num {
             #[staticmethod]
             /// (Hyper) dual number from real part, setting all other parts to zero.
             pub fn from_re(re: $field_type) -> Self {
-                Self::from(<$data_type>::from_re(re.into()))
+                <$data_type>::from_re(re.into()).into()
             }
 
             #[getter]

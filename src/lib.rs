@@ -20,8 +20,8 @@ impl_dual_num!(PyHyperDual64, HyperDual64, f64);
 impl_dual_num!(PyHD2_64, HD2_64, f64);
 impl_dual_num!(PyHD3_64, HD3_64, f64);
 impl_dual_num!(PyHyperDualDual64, HyperDualDual64, PyDual64);
-impl_dual_num!(PyHD3Dual64, HD3Dual64, PyDual64);
 impl_dual_num!(PyHD2Dual64, HD2Dual64, PyDual64);
+impl_dual_num!(PyHD3Dual64, HD3Dual64, PyDual64);
 
 /// Hyperdual numbers.
 /// ==================

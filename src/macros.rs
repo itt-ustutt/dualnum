@@ -297,6 +297,10 @@ macro_rules! impl_dual_num {
                 };
                 Err(PyErr::new::<PyTypeError, _>(format!("not implemented!")))
             }
+
+            fn __neg__(&self) -> PyResult<Self> {
+                Ok((-self._data).into())
+            }
         }
 
         #[pyproto]

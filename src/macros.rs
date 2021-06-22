@@ -23,7 +23,7 @@ macro_rules! impl_dual_num {
 
             #[getter]
             /// Real part.
-            fn get_re(&self) -> $field_type {
+            fn get_value(&self) -> $field_type {
                 self._data.re.into()
             }
 

@@ -34,22 +34,18 @@ impl PyHyperDual64 {
 
     #[getter]
     /// First hyperdual part.
-    fn get_eps1(&self) -> f64 {
-        self._data.eps1
-    }
-
-    #[getter]
-    /// Second hyperdual part.
-    fn get_eps2(&self) -> f64 {
-        self._data.eps2
+    fn get_first_derivative(&self) -> (f64, f64) {
+        (self._data.eps1, self._data.eps2)
     }
 
     #[getter]
     /// Third hyperdual part.
-    fn get_eps1eps2(&self) -> f64 {
+    fn get_second_derivative(&self) -> f64 {
         self._data.eps1eps2
     }
 }
+
+impl_dual_num!(PyHyperDual64, HyperDual64, f64);
 
 #[pyclass(name = "HyperDualDual64")]
 #[derive(Clone)]
@@ -69,22 +65,18 @@ impl PyHyperDualDual64 {
 
     #[getter]
     /// First hyperdual part.
-    fn get_eps1(&self) -> PyDual64 {
-        self._data.eps1.into()
-    }
-
-    #[getter]
-    /// Second hyperdual part.
-    fn get_eps2(&self) -> PyDual64 {
-        self._data.eps2.into()
+    fn get_first_derivative(&self) -> (PyDual64, PyDual64) {
+        (self._data.eps1.into(), self._data.eps2.into())
     }
 
     #[getter]
     /// Third hyperdual part.
-    fn get_eps1eps2(&self) -> PyDual64 {
+    fn get_second_derivative(&self) -> PyDual64 {
         self._data.eps1eps2.into()
     }
 }
+
+impl_dual_num!(PyHyperDualDual64, HyperDualDual64, PyDual64);
 
 macro_rules! impl_hyper_dual_n {
     ($py_type_name:ident, $n:literal) => {
@@ -106,15 +98,20 @@ macro_rules! impl_hyper_dual_n {
         impl $py_type_name {
             #[getter]
             /// Gradient.
-            pub fn get_v1(&self) -> [f64; $n] {
+            pub fn get_first_derivative(&self) -> [f64; $n] {
                 *self._data.v1.raw_array()
             }
 
-            // #[getter]
-            // /// Hessian.
-            // pub fn get_hessian(&self) -> [[f64; $n]; $n] {
-            //     *self._data.v2.raw_data()
-            // }
+            #[getter]
+            /// Hessian.
+            pub fn get_second_derivative(&self) -> Vec<Vec<f64>> {
+                self._data
+                    .v2
+                    .raw_data()
+                    .iter()
+                    .map(|a| a.to_vec())
+                    .collect()
+            }
         }
 
         impl_dual_num!($py_type_name, HyperDualN64<$n>, f64);
@@ -151,21 +148,15 @@ macro_rules! impl_hyper_dual_mn {
         impl $py_type_name {
             #[getter]
             /// First hyperdual part.
-            fn get_eps1(&self) -> [f64; $m] {
-                *self._data.eps1.raw_array()
+            fn get_first_derivative(&self) -> ([f64; $m], [f64; $n]) {
+                (*self._data.eps1.raw_array(), *self._data.eps2.raw_array())
             }
 
             #[getter]
-            /// Second hyperdual part.
-            fn get_eps2(&self) -> [f64; $n] {
-                *self._data.eps2.raw_array()
+            /// Hessian.
+            pub fn get_second_derivative(&self) -> Vec<Vec<f64>> {
+                self._data.eps1eps2.raw_data().iter().map(|a| a.to_vec()).collect()
             }
-
-            // #[getter]
-            // /// Hessian.
-            // pub fn get_hessian(&self) -> [[f64; $n]; $n] {
-            //     *self._data.v2.raw_data()
-            // }
         }
 
         impl_dual_num!($py_type_name, HyperDualMN64<$m, $n>, f64);
@@ -174,67 +165,65 @@ macro_rules! impl_hyper_dual_mn {
 
 macro_rules! impl_derive {
     ([$(($py_type_name:ident, $n:literal)),+; $(($py_type_name12:ident, $py_type_name21:ident, $m:literal)),+; $(($py_type_name3:ident, $m1:literal, $m2:literal)),+]) => {
-        #[pymethods]
-        impl PyHyperDual64 {
-            #[staticmethod]
-            fn derive(x1: &PyAny, x2: Option<&PyAny>) -> PyResult<PyObject> {
-                Python::with_gil(|py| {
-                    match x2 {
-                        None => {
-                            if let Ok(x) = x1.extract::<f64>() {
-                                return Ok(PyCell::new(py, PyHD2_64::from(HD2_64::from(x).derive()))?.to_object(py));
+        #[pyfunction]
+        #[text_signature = "(x, y=None)"]
+        pub fn derive2(x1: &PyAny, x2: Option<&PyAny>) -> PyResult<PyObject> {
+            Python::with_gil(|py| {
+                match x2 {
+                    None => {
+                        if let Ok(x) = x1.extract::<f64>() {
+                            return Ok(PyCell::new(py, PyHD2_64::from(HD2_64::from(x).derive()))?.to_object(py));
+                        };
+                        if let Ok(x) = x1.extract::<PyDual64>() {
+                            return Ok(PyCell::new(py, PyHD2Dual64::from(HD2Dual64::from_re(x._data).derive()))?.to_object(py));
+                        };
+                        $(
+                            if let Ok(x) = x1.extract::<[f64; $n]>() {
+                                let arr = StaticVec::new_vec(x).map(HyperDualN64::from).derive();
+                                let py_vec: Result<Vec<&PyCell<$py_type_name>>, _> = arr.raw_array().iter().map(|&i| PyCell::new(py, $py_type_name::from(i))).collect();
+                                return Ok(py_vec?.to_object(py));
                             };
-                            if let Ok(x) = x1.extract::<PyDual64>() {
-                                return Ok(PyCell::new(py, PyHD2Dual64::from(HD2Dual64::from_re(x._data).derive()))?.to_object(py));
+                        )+
+                    },
+                    Some(x2) => {
+                        if let (Ok(x1), Ok(x2)) = (x1.extract::<f64>(), x2.extract::<f64>()) {
+                            let x1 = HyperDual64::from(x1).derive1();
+                            let x2 = HyperDual64::from(x2).derive2();
+                            let py_x1 = PyCell::new(py, PyHyperDual64::from(x1));
+                            let py_x2 = PyCell::new(py, PyHyperDual64::from(x2));
+                            return Ok((py_x1?, py_x2?).to_object(py));
+                        };
+                        $(
+                            if let (Ok(x1), Ok(x2)) = (x1.extract::<f64>(), x2.extract::<[f64; $m]>()) {
+                                let x1 = HyperDualMN64::from(x1).derive1();
+                                let arr2 = StaticVec::new_vec(x2).map(HyperDualMN64::from).derive2();
+                                let py_x1 = PyCell::new(py, $py_type_name12::from(x1));
+                                let py_vec2: Result<Vec<&PyCell<$py_type_name12>>, _> = arr2.raw_array().iter().map(|&i| PyCell::new(py, $py_type_name12::from(i))).collect();
+                                return Ok((py_x1?, py_vec2?).to_object(py));
                             };
-                            $(
-                                if let Ok(x) = x1.extract::<[f64; $n]>() {
-                                    let arr = StaticVec::new_vec(x).map(HyperDualN64::from).derive();
-                                    let py_vec: Result<Vec<&PyCell<$py_type_name>>, _> = arr.raw_array().iter().map(|&i| PyCell::new(py, $py_type_name::from(i))).collect();
-                                    return Ok(py_vec?.to_object(py));
-                                };
-                            )+
-                        },
-                        Some(x2) => {
-                            if let (Ok(x1), Ok(x2)) = (x1.extract::<f64>(), x2.extract::<f64>()) {
-                                let x1 = HyperDual64::from(x1).derive1();
-                                let x2 = HyperDual64::from(x2).derive2();
-                                let py_x1 = PyCell::new(py, PyHyperDual64::from(x1));
-                                let py_x2 = PyCell::new(py, PyHyperDual64::from(x2));
-                                return Ok((py_x1?, py_x2?).to_object(py));
+                        )+
+                        $(
+                            if let (Ok(x1), Ok(x2)) = (x1.extract::<[f64; $m]>(), x2.extract::<f64>(), ) {
+                                let arr1 = StaticVec::new_vec(x1).map(HyperDualMN64::from).derive1();
+                                let x2 = HyperDualMN64::from(x2).derive2();
+                                let py_vec1: Result<Vec<&PyCell<$py_type_name21>>, _> = arr1.raw_array().iter().map(|&i| PyCell::new(py, $py_type_name21::from(i))).collect();
+                                let py_x2 = PyCell::new(py, $py_type_name21::from(x2));
+                                return Ok((py_vec1?, py_x2?).to_object(py));
                             };
-                            $(
-                                if let (Ok(x1), Ok(x2)) = (x1.extract::<f64>(), x2.extract::<[f64; $m]>()) {
-                                    let x1 = HyperDualMN64::from(x1).derive1();
-                                    let arr2 = StaticVec::new_vec(x2).map(HyperDualMN64::from).derive2();
-                                    let py_x1 = PyCell::new(py, $py_type_name12::from(x1));
-                                    let py_vec2: Result<Vec<&PyCell<$py_type_name12>>, _> = arr2.raw_array().iter().map(|&i| PyCell::new(py, $py_type_name12::from(i))).collect();
-                                    return Ok((py_x1?, py_vec2?).to_object(py));
-                                };
-                            )+
-                            $(
-                                if let (Ok(x1), Ok(x2)) = (x1.extract::<[f64; $m]>(), x2.extract::<f64>(), ) {
-                                    let arr1 = StaticVec::new_vec(x1).map(HyperDualMN64::from).derive2();
-                                    let x2 = HyperDualMN64::from(x2).derive1();
-                                    let py_vec1: Result<Vec<&PyCell<$py_type_name12>>, _> = arr1.raw_array().iter().map(|&i| PyCell::new(py, $py_type_name12::from(i))).collect();
-                                    let py_x2 = PyCell::new(py, $py_type_name12::from(x2));
-                                    return Ok((py_vec1?, py_x2?).to_object(py));
-                                };
-                            )+
-                            $(
-                                if let (Ok(x1), Ok(x2)) = (x1.extract::<[f64; $m1]>(), x2.extract::<[f64; $m2]>()) {
-                                    let arr1 = StaticVec::new_vec(x1).map(HyperDualMN64::from).derive1();
-                                    let arr2 = StaticVec::new_vec(x2).map(HyperDualMN64::from).derive2();
-                                    let py_vec1: Result<Vec<&PyCell<$py_type_name3>>, _> = arr1.raw_array().iter().map(|&i| PyCell::new(py, $py_type_name3::from(i))).collect();
-                                    let py_vec2: Result<Vec<&PyCell<$py_type_name3>>, _> = arr2.raw_array().iter().map(|&i| PyCell::new(py, $py_type_name3::from(i))).collect();
-                                    return Ok((py_vec1?, py_vec2?).to_object(py));
-                                };
-                            )+
-                        }
-                    };
-                    Err(PyErr::new::<PyTypeError, _>(format!("not implemented!")))
-                })
-            }
+                        )+
+                        $(
+                            if let (Ok(x1), Ok(x2)) = (x1.extract::<[f64; $m1]>(), x2.extract::<[f64; $m2]>()) {
+                                let arr1 = StaticVec::new_vec(x1).map(HyperDualMN64::from).derive1();
+                                let arr2 = StaticVec::new_vec(x2).map(HyperDualMN64::from).derive2();
+                                let py_vec1: Result<Vec<&PyCell<$py_type_name3>>, _> = arr1.raw_array().iter().map(|&i| PyCell::new(py, $py_type_name3::from(i))).collect();
+                                let py_vec2: Result<Vec<&PyCell<$py_type_name3>>, _> = arr2.raw_array().iter().map(|&i| PyCell::new(py, $py_type_name3::from(i))).collect();
+                                return Ok((py_vec1?, py_vec2?).to_object(py));
+                            };
+                        )+
+                    }
+                };
+                Err(PyErr::new::<PyTypeError, _>(format!("not implemented!")))
+            })
         }
         $(impl_hyper_dual_n!($py_type_name, $n);)+
         $(impl_hyper_dual_mn!($py_type_name12, 1, $m);)+

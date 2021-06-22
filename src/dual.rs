@@ -32,10 +32,12 @@ impl PyDual64 {
 
     #[getter]
     /// Dual part.
-    pub fn get_eps(&self) -> f64 {
+    pub fn get_first_derivative(&self) -> f64 {
         self._data.eps
     }
 }
+
+impl_dual_num!(PyDual64, Dual64, f64);
 
 macro_rules! impl_dual_n {
     ($py_type_name:ident, $n:literal) => {
@@ -57,7 +59,7 @@ macro_rules! impl_dual_n {
         impl $py_type_name {
             #[getter]
             /// Dual part.
-            pub fn get_eps(&self) -> [f64; $n] {
+            pub fn get_first_derivative(&self) -> [f64; $n] {
                 *self._data.eps.raw_array()
             }
         }
@@ -68,24 +70,22 @@ macro_rules! impl_dual_n {
 
 macro_rules! impl_derive {
     ([$(($py_type_name:ident, $n:literal)),+]) => {
-        #[pymethods]
-        impl PyDual64 {
-            #[staticmethod]
-            fn derive(x: &PyAny) -> PyResult<PyObject> {
-                Python::with_gil(|py| {
-                    if let Ok(x) = x.extract::<f64>() {
-                        return Ok(PyCell::new(py, PyDual64::from(Dual64::from_re(x).derive()))?.to_object(py));
+        #[pyfunction]
+        #[text_signature = "(x)"]
+        pub fn derive1(x: &PyAny) -> PyResult<PyObject> {
+            Python::with_gil(|py| {
+                if let Ok(x) = x.extract::<f64>() {
+                    return Ok(PyCell::new(py, PyDual64::from(Dual64::from_re(x).derive()))?.to_object(py));
+                };
+                $(
+                    if let Ok(x) = x.extract::<[f64; $n]>() {
+                        let arr = StaticVec::new_vec(x).map(DualN64::from).derive();
+                        let py_vec: Result<Vec<&PyCell<$py_type_name>>, _> = arr.raw_array().iter().map(|&i| PyCell::new(py, $py_type_name::from(i))).collect();
+                        return Ok(py_vec?.to_object(py));
                     };
-                    $(
-                        if let Ok(x) = x.extract::<[f64; $n]>() {
-                            let arr = StaticVec::new_vec(x).map(DualN64::from).derive();
-                            let py_vec: Result<Vec<&PyCell<$py_type_name>>, _> = arr.raw_array().iter().map(|&i| PyCell::new(py, $py_type_name::from(i))).collect();
-                            return Ok(py_vec?.to_object(py));
-                        };
-                    )+
-                    Err(PyErr::new::<PyTypeError, _>(format!("not implemented!")))
-                })
-            }
+                )+
+                Err(PyErr::new::<PyTypeError, _>(format!("not implemented!")))
+            })
         }
         $(impl_dual_n!($py_type_name, $n);)+
     };

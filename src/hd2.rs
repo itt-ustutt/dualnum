@@ -1,5 +1,7 @@
 use crate::dual::PyDual64;
 use num_hyperdual::*;
+use pyo3::exceptions::PyTypeError;
+use pyo3::number::PyNumberProtocol;
 use pyo3::prelude::*;
 
 #[pyclass(name = "HD2_64")]
@@ -18,16 +20,18 @@ impl PyHD2_64 {
 
     #[getter]
     /// First hyperdual part.
-    fn get_v1(&self) -> f64 {
+    fn get_first_derivative(&self) -> f64 {
         self._data.v1
     }
 
     #[getter]
     /// Second hyperdual part.
-    fn get_v2(&self) -> f64 {
+    fn get_second_derivative(&self) -> f64 {
         self._data.v2
     }
 }
+
+impl_dual_num!(PyHD2_64, HD2_64, f64);
 
 #[pyclass(name = "HD2Dual64")]
 #[derive(Clone)]
@@ -45,13 +49,15 @@ impl PyHD2Dual64 {
 
     #[getter]
     /// First hyperdual part.
-    fn get_v1(&self) -> PyDual64 {
+    fn get_first_derivative(&self) -> PyDual64 {
         self._data.v1.into()
     }
 
     #[getter]
     /// Second hyperdual part.
-    fn get_v2(&self) -> PyDual64 {
+    fn get_second_derivative(&self) -> PyDual64 {
         self._data.v2.into()
     }
 }
+
+impl_dual_num!(PyHD2Dual64, HD2Dual64, PyDual64);

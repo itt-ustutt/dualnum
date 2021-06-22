@@ -1,6 +1,7 @@
 use crate::dual::PyDual64;
 use num_hyperdual::*;
 use pyo3::exceptions::PyTypeError;
+use pyo3::number::PyNumberProtocol;
 use pyo3::prelude::*;
 
 #[pyclass(name = "HD3_64")]
@@ -19,22 +20,24 @@ impl PyHD3_64 {
 
     #[getter]
     /// First hyperdual part.
-    fn get_v1(&self) -> f64 {
+    fn get_first_derivative(&self) -> f64 {
         self._data.v1
     }
 
     #[getter]
     /// Second hyperdual part.
-    fn get_v2(&self) -> f64 {
+    fn get_second_derivative(&self) -> f64 {
         self._data.v2
     }
 
     #[getter]
     /// Third hyperdual part.
-    fn get_v3(&self) -> f64 {
+    fn get_third_derivative(&self) -> f64 {
         self._data.v3
     }
 }
+
+impl_dual_num!(PyHD3_64, HD3_64, f64);
 
 #[pyclass(name = "HD3Dual64")]
 #[derive(Clone)]
@@ -52,41 +55,38 @@ impl PyHD3Dual64 {
 
     #[getter]
     /// First hyperdual part.
-    fn get_v1(&self) -> PyDual64 {
+    fn get_first_derivative(&self) -> PyDual64 {
         self._data.v1.into()
     }
 
     #[getter]
     /// Second hyperdual part.
-    fn get_v2(&self) -> PyDual64 {
+    fn get_second_derivative(&self) -> PyDual64 {
         self._data.v2.into()
     }
 
     #[getter]
     /// Third hyperdual part.
-    fn get_v3(&self) -> PyDual64 {
+    fn get_third_derivative(&self) -> PyDual64 {
         self._data.v3.into()
     }
 }
 
-#[pymethods]
-impl PyHD3_64 {
-    #[staticmethod]
-    fn derive(x: &PyAny) -> PyResult<PyObject> {
-        Python::with_gil(|py| {
-            if let Ok(x) = x.extract::<f64>() {
-                return Ok(
-                    PyCell::new(py, PyHD3_64::from(HD3_64::from_re(x).derive()))?.to_object(py),
-                );
-            };
-            if let Ok(x) = x.extract::<PyDual64>() {
-                return Ok(PyCell::new(
-                    py,
-                    PyHD3Dual64::from(HD3Dual64::from_re(x._data).derive()),
-                )?
-                .to_object(py));
-            };
-            Err(PyErr::new::<PyTypeError, _>(format!("not implemented!")))
-        })
-    }
+impl_dual_num!(PyHD3Dual64, HD3Dual64, PyDual64);
+
+#[pyfunction]
+#[text_signature = "(x)"]
+fn derive3(x: &PyAny) -> PyResult<PyObject> {
+    Python::with_gil(|py| {
+        if let Ok(x) = x.extract::<f64>() {
+            return Ok(PyCell::new(py, PyHD3_64::from(HD3_64::from_re(x).derive()))?.to_object(py));
+        };
+        if let Ok(x) = x.extract::<PyDual64>() {
+            return Ok(
+                PyCell::new(py, PyHD3Dual64::from(HD3Dual64::from_re(x._data).derive()))?
+                    .to_object(py),
+            );
+        };
+        Err(PyErr::new::<PyTypeError, _>(format!("not implemented!")))
+    })
 }

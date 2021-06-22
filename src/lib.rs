@@ -1,27 +1,21 @@
-use num_hyperdual::*;
-use pyo3::exceptions::PyTypeError;
-use pyo3::number::PyNumberProtocol;
 use pyo3::prelude::*;
+use pyo3::wrap_pyfunction;
 
 #[macro_use]
 mod macros;
 mod dual;
-mod hd3;
 mod hd2;
+mod hd3;
 mod hyperdual;
 
-use dual::PyDual64;
-use hd3::{PyHD3Dual64, PyHD3_64};
-use hd2::{PyHD2Dual64, PyHD2_64};
-use hyperdual::{PyHyperDual64, PyHyperDualDual64};
+use dual::__pyo3_get_function_derive1;
+use hd3::__pyo3_get_function_derive3;
+use hyperdual::__pyo3_get_function_derive2;
 
-impl_dual_num!(PyDual64, Dual64, f64);
-impl_dual_num!(PyHyperDual64, HyperDual64, f64);
-impl_dual_num!(PyHD2_64, HD2_64, f64);
-impl_dual_num!(PyHD3_64, HD3_64, f64);
-impl_dual_num!(PyHyperDualDual64, HyperDualDual64, PyDual64);
-impl_dual_num!(PyHD2Dual64, HD2Dual64, PyDual64);
-impl_dual_num!(PyHD3Dual64, HD3Dual64, PyDual64);
+pub use dual::PyDual64;
+pub use hd2::{PyHD2Dual64, PyHD2_64};
+pub use hd3::{PyHD3Dual64, PyHD3_64};
+pub use hyperdual::{PyHyperDual64, PyHyperDualDual64};
 
 /// Hyperdual numbers.
 /// ==================
@@ -79,5 +73,8 @@ fn hyperdual(_py: Python, m: &PyModule) -> PyResult<()> {
     m.add_class::<PyHyperDualDual64>()?;
     m.add_class::<PyHD2Dual64>()?;
     m.add_class::<PyHD3Dual64>()?;
+    m.add_function(wrap_pyfunction!(derive1, m)?).unwrap();
+    m.add_function(wrap_pyfunction!(derive2, m)?).unwrap();
+    m.add_function(wrap_pyfunction!(derive3, m)?).unwrap();
     Ok(())
 }

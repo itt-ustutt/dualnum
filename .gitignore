@@ -1,0 +1,5 @@
+Cargo.lock
+docs/_build
+docs/generated
+*.so
+target

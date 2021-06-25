@@ -1,5 +1,7 @@
 # Hyper-Dual Numbers
 
+[![documentation](https://img.shields.io/badge/docs-github--pages-blue)](https://itt-ustutt.github.io/hyperdual/)
+
 Python bindings for the `num-hyperdual` rust crate.
 
 ## Installation

@@ -54,7 +54,9 @@ jobs:
           key: ${{ runner.os }}-${{ steps.rustup.outputs.rustc_hash }}-target-${{ hashFiles('**/Cargo.lock') }}
 
       - name: Build shared object for documentation
-        run: maturin develop --release
+        run: |
+          source venv/bin/activate
+          maturin develop --release
 
       - name: Build documentation
         run: sphinx-build docs/ public/ -b html

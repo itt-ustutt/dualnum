@@ -1,4 +1,3 @@
-#[macro_use]
 macro_rules! impl_dual_num {
     ($py_type_name:ty, $data_type:ty, $field_type:ty) => {
         impl From<$data_type> for $py_type_name {

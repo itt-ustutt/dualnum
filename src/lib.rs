@@ -113,7 +113,7 @@ pub use hyperdual::{PyHyperDual64, PyHyperDualDual64};
 /// >>> f(x)
 /// 4.497780053946162 + 4.053427893898621ε1 + 4.053427893898621ε2 + 9.463073681596605ε1ε2
 #[pymodule]
-fn hyperdual(_py: Python, m: &PyModule) -> PyResult<()> {
+fn dualnum(_py: Python, m: &PyModule) -> PyResult<()> {
     m.add_class::<PyDual64>()?;
     m.add_class::<PyHyperDual64>()?;
     m.add_class::<PyDual2_64>()?;

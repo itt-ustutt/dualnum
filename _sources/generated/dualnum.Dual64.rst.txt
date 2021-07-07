@@ -1,7 +1,7 @@
-﻿hyperdual.Dual64
-================
+﻿dualnum.Dual64
+==============
 
-.. currentmodule:: hyperdual
+.. currentmodule:: dualnum
 
 .. autoclass:: Dual64
 

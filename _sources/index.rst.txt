@@ -1,9 +1,9 @@
-hyperdual - Hyperdual numbers in python
-=======================================
+dualnum - generalized (hyper) dual numbers in python
+====================================================
 
 .. toctree::
 
-Using hyperdual numbers, you can compute exact derivatives of functions without writing analytical derivatives
+Using dual numbers, you can compute exact derivatives of functions without writing analytical derivatives
 or using numeric differentiation.
 
 Examples
@@ -23,7 +23,7 @@ Different from a regular python function though, we use (hyper)dual numbers as a
 For example, to compute the first derivative at x = 2, we need to call the function with a dual number as input, setting the dual part (ε)
 to 1.0.
 
->>> from hyperdual import Dual64
+>>> from dualnum import Dual64
 >>> x = Dual64(2.0, 1.0)
 >>> x
 2 + 1ε
@@ -58,7 +58,7 @@ where `x = derive1(2.0)` constructs the correct dual number for us.
 
 Let's compute the second and third derivatives!
 
->>> from hyperdual import derive3
+>>> from dualnum import derive3
 >>> x = derive3(2.0)
 >>> result = f(x)
 >>> print(f"f(x)   = {result}\nf'(x)  = {result.first_derivative}\nf''(x) = {result.second_derivative}\nf'''(x) = {result.third_derivative}")
@@ -79,7 +79,7 @@ A function that is often used as benchmark in optimization problems is the Rosen
 
 The function and its derivatives are implemented in `scipy`. Let's compute the partial derivatives of the Rosenbrock function.
 
->>> from hyperdual import derive2
+>>> from dualnum import derive2
 >>> from scipy.optimize import rosen, rosen_der
 >>> import numpy as np
 >>> x, y = derive2(0.5, 1.0)
@@ -110,7 +110,7 @@ Such a function is e.g. the helmholtz energy, denoted as :math:`a`, a function i
 It is a function of the volume, :math:`V`, the temperature, :math:`T`, and the number of particles of possibly
 multiple components, :math:`N`. Let's define this function (for an ideal gas) and compute some interesting properties.
 
->>> from hyperdual import *
+>>> from dualnum import *
 >>> import numpy as np
 >>>
 >>> t = 300.0
@@ -155,15 +155,17 @@ We provide evaluations for a lot of useful mathematical expressions that are def
 Calling the same function with a hyper dual number and dual parts of 1
 yields the first and second derivatives. (ε1 and ε2 parts are identical)
 
->>> from hyperdual import HyperDual64 as HD64
+>>> from dualnum import HyperDual64 as HD64
 >>> x = HD64(1.5, 1.0, 1.0, 0.0)
 >>> f(x)
 4.497780053946162 + 4.053427893898621ε1 + 4.053427893898621ε2 + 9.463073681596605ε1ε2
 
-.. currentmodule:: hyperdual
+.. currentmodule:: dualnum
 
 .. autosummary::
    :toctree: generated/
 
-      HyperDual64
       Dual64
+      HyperDual64
+      Dual2_64
+      Dual3_64

@@ -12,7 +12,7 @@ use pyo3::prelude::*;
 ///
 /// # Examples
 ///
-/// >>> from hyperdual import Dual64 as D64
+/// >>> from dualnum import Dual64 as D64
 /// >>> x = D64(1.0, 0.0)
 /// >>> y = D64.from_re(2.0)
 /// >>> x + y

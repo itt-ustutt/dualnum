@@ -1,8 +1,8 @@
 # Hyper-Dual Numbers
 
-[![documentation](https://img.shields.io/badge/docs-github--pages-blue)](https://itt-ustutt.github.io/hyperdual/)
+[![documentation](https://img.shields.io/badge/docs-github--pages-blue)](https://itt-ustutt.github.io/dualnum/)
 
-Python bindings for the `num-hyperdual` rust crate.
+Python bindings for the `num-dual` rust crate.
 
 ## Installation
 
@@ -16,7 +16,7 @@ virtualenv venv
 source venv/bin/activate
 pip install maturin
 maturin build --release
-pip install target/wheels/hyperdual.***.whl
+pip install target/wheels/dualnum.***.whl
 ```
 
 ## Sphinx documentation
@@ -36,7 +36,7 @@ firefox _build/html/index.html
 ### Compute first and second derivative of a scalar valued function.
 
 ```python
-from hyperdual import HyperDual64 as HD64
+from dualnum import HyperDual64 as HD64
 import numpy as np
 
 def f(x):

@@ -1,4 +1,4 @@
-use num_hyperdual::*;
+use num_dual::*;
 use pyo3::exceptions::PyTypeError;
 use pyo3::number::PyNumberProtocol;
 use pyo3::prelude::*;
@@ -12,7 +12,7 @@ use pyo3::prelude::*;
 ///
 /// # Examples
 ///
-/// >>> from hyperdual import Dual64 as D64
+/// >>> from dualnum import Dual64 as D64
 /// >>> x = D64(1.0, 0.0)
 /// >>> y = D64.from_re(2.0)
 /// >>> x + y
@@ -26,14 +26,14 @@ impl PyDual64 {
     #[new]
     pub fn new(re: f64, eps: f64) -> Self {
         Self {
-            _data: Dual64::new(re, eps),
+            _data: Dual64::new_scalar(re, eps),
         }
     }
 
     #[getter]
     /// Dual part.
     pub fn get_first_derivative(&self) -> f64 {
-        self._data.eps
+        self._data.eps[0]
     }
 }
 
@@ -41,16 +41,16 @@ impl_dual_num!(PyDual64, Dual64, f64);
 
 macro_rules! impl_dual_n {
     ($py_type_name:ident, $n:literal) => {
-        #[pyclass(name = "DualN64")]
+        #[pyclass(name = "DualVec64")]
         #[derive(Clone, Copy)]
         pub struct $py_type_name {
-            pub _data: DualN64<$n>,
+            pub _data: DualVec64<$n>,
         }
 
         impl $py_type_name {
             pub fn new(re: f64, eps: [f64; $n]) -> Self {
                 Self {
-                    _data: DualN64::new(re, StaticVec::new_vec(eps)),
+                    _data: DualVec64::new(re, StaticVec::new_vec(eps)),
                 }
             }
         }
@@ -64,7 +64,7 @@ macro_rules! impl_dual_n {
             }
         }
 
-        impl_dual_num!($py_type_name, DualN64<$n>, f64);
+        impl_dual_num!($py_type_name, DualVec64<$n>, f64);
     };
 }
 
@@ -79,7 +79,7 @@ macro_rules! impl_derive {
                 };
                 $(
                     if let Ok(x) = x.extract::<[f64; $n]>() {
-                        let arr = StaticVec::new_vec(x).map(DualN64::from).derive();
+                        let arr = StaticVec::new_vec(x).map(DualVec64::from).derive();
                         let py_vec: Result<Vec<&PyCell<$py_type_name>>, _> = arr.raw_array().iter().map(|&i| PyCell::new(py, $py_type_name::from(i))).collect();
                         return Ok(py_vec?.to_object(py));
                     };

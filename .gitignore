@@ -3,3 +3,5 @@ docs/_build
 docs/generated
 *.so
 target
+venv
+.ipynb_checkpoints

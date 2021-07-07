@@ -17,7 +17,7 @@ sys.path.append(os.path.abspath(os.path.join(__file__, "../..")))
 sys.path.insert(0, os.path.abspath('.'))
 
 # -- Project information -----------------------------------------------------
-project = 'hyperdual'
+project = 'dualnum'
 copyright = '2020, Philipp Rehner, Gernot Bauer'
 author = 'Philipp Rehner, Gernot Bauer'
 

@@ -1,18 +1,18 @@
 [package]
-name = "hyperdual"
+name = "dualnum"
 version = "0.1.0"
 authors = ["Gernot Bauer <bauer@itt.uni-stuttgart.de>",
            "Philipp Rehner <rehner@itt.uni-stuttgart.de>"]
 edition = "2018"
 
 [lib]
-name = "hyperdual"
+name = "dualnum"
 crate-type = ["cdylib", "lib"]
 
 # See more keys and their definitions at https://doc.rust-lang.org/cargo/reference/manifest.html
 
 [dependencies]
-num-hyperdual = "0.1"
+num-dual = "0.1"
 
 [dependencies.pyo3]
 version = "0.13"

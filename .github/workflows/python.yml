@@ -1,0 +1,30 @@
+name: Build Wheels
+
+on:
+  push:
+    branches: [master]
+
+jobs:
+  linux:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v2
+      - uses: actions/setup-python@v2
+        with:
+          python-version: 3.9
+      - uses: actions-rs/toolchain@v1
+        with:
+          profile: minimal
+          toolchain: stable
+          override: true
+      - name: Build Wheels
+        uses: messense/maturin-action@v1
+        with:
+          manylinux: auto
+          command: build
+          args: --release
+      - name: Upload wheels
+        uses: actions/upload-artifact@v2
+        with:
+          name: wheels
+          path: target/wheels/*.whl

@@ -49,3 +49,4 @@ result = f(x)
 print('f(x)    = {}'.format(result.re))
 print('df/dx   = {}'.format(result.eps1))
 print('d2f/dx2 = {}'.format(result.eps1eps2))
+```

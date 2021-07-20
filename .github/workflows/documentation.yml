@@ -23,7 +23,7 @@ jobs:
 
       - name: Install python dependencies
         run: |
-          python3 -m pip install -r ./requirements.txt
+          python3 -m pip install virtualenv maturin sphinx
           virtualenv venv
           source venv/bin/activate
 
@@ -70,6 +70,7 @@ jobs:
   deploy:
     needs: [build]
     runs-on: ubuntu-latest
+    if: startsWith(github.ref, 'refs/tags')
 
     steps:
       - name: Download artifacts

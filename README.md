@@ -6,17 +6,16 @@ Python bindings for the `num-dual` rust crate.
 
 ## Installation
 
-Currently, you need to have a rust compiler and python installed.
-You also need `virtualenv`.
+```
+pip install dualnum
+```
 
-From project root:
+## Installation from source
+
+To install from source, you need to have the rust compiler installed.
 
 ```
-virtualenv venv
-source venv/bin/activate
-pip install maturin
-maturin build --release
-pip install target/wheels/dualnum.***.whl
+pip install git+https://github.com/itt-ustutt/dualnum
 ```
 
 ## Sphinx documentation
@@ -49,3 +48,4 @@ result = f(x)
 print('f(x)    = {}'.format(result.re))
 print('df/dx   = {}'.format(result.eps1))
 print('d2f/dx2 = {}'.format(result.eps1eps2))
+```

@@ -19,6 +19,7 @@ pub use hyperdual::{PyHyperDual64, PyHyperDualDual64};
 
 #[pymodule]
 fn dualnum(_py: Python, m: &PyModule) -> PyResult<()> {
+    m.add("__version__", env!("CARGO_PKG_VERSION"))?;
     m.add_class::<PyDual64>()?;
     m.add_class::<PyHyperDual64>()?;
     m.add_class::<PyDual2_64>()?;

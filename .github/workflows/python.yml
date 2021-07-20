@@ -23,7 +23,7 @@ jobs:
       - name: Upload wheels
         uses: actions/upload-artifact@v2
         with:
-          name: wheels
+          name: dist
           path: dist
 
   publish-pypi:
@@ -33,7 +33,7 @@ jobs:
     steps:
       - uses: actions/download-artifact@v2
         with:
-          name: wheels
+          name: dist
       - name: Publish wheels to Test PyPI
         uses: pypa/gh-action-pypi-publish@master
         with:

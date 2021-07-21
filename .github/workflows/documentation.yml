@@ -66,22 +66,3 @@ jobs:
         with:
           name: documentation
           path: public
-
-  deploy:
-    needs: [build]
-    runs-on: ubuntu-latest
-    if: startsWith(github.ref, 'refs/tags')
-
-    steps:
-      - name: Download artifacts
-        uses: actions/download-artifact@v1
-        with:
-          name: documentation
-          path: public
-
-      - name: Deploy documentation to gh-pages
-        uses: peaceiris/actions-gh-pages@v3
-        if: github.ref == 'refs/heads/master'
-        with:
-          github_token: ${{ secrets.GITHUB_TOKEN }}
-          publish_dir: ./public

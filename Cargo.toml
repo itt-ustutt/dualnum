@@ -5,6 +5,13 @@ authors = ["Gernot Bauer <bauer@itt.uni-stuttgart.de>",
            "Philipp Rehner <rehner@itt.uni-stuttgart.de>"]
 edition = "2018"
 readme = "README.md"
+license = "MIT OR Apache-2.0"
+description = "Python bindings for num-dual: Generalized (hyper) dual numbers for the calculation of exact (partial) derivatives"
+homepage = "https://github.com/itt-ustutt/dualnum"
+repository = "https://github.com/itt-ustutt/dualnum"
+keywords = ["mathematics", "numerics", "differentiation"]
+categories = ["data-structures", "science", "mathematics"]
+exclude = ["/.github/*", "*.ipynb", "./docs/*"]
 
 [lib]
 name = "dualnum"

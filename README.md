@@ -1,6 +1,7 @@
 # Hyper-Dual Numbers
 
 [![documentation](https://img.shields.io/badge/docs-github--pages-blue)](https://itt-ustutt.github.io/dualnum/)
+[![PyPI version](https://badge.fury.io/py/dualnum.svg)](https://badge.fury.io/py/dualnum)
 
 Python bindings for the `num-dual` rust crate.
 

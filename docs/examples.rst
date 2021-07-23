@@ -18,7 +18,7 @@ to 1.0.
 >>> from dualnum import Dual64
 >>> x = Dual64(2.0, 1.0)
 >>> x
-2 + 1ε
+2 + [1]ε
 
 Then, calling the function, the result is also a dual number, where the real part (or value)
 is the result of the function that we would get by simply calling it with a floating point number,

@@ -16,11 +16,12 @@ use pyo3::prelude::*;
 /// >>> x = D64(1.0, 0.0)
 /// >>> y = D64.from_re(2.0)
 /// >>> x + y
-/// 3 + 0ε
+/// 3 + [0]ε
 ///
 /// First derivative of a function.
 ///
 /// >>> from dualnum import Dual64 as D64, derive1
+/// >>> import numpy as np
 /// >>> x = derive1(4.0)
 /// >>> # this is equivalent to the above
 /// >>> x = D64(4.0, 1.0)

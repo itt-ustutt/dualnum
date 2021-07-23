@@ -36,17 +36,15 @@ firefox _build/html/index.html
 ### Compute first and second derivative of a scalar valued function.
 
 ```python
-from dualnum import HyperDual64 as HD64
+from dualnum import HyperDual64 as HD64, derive2
 import numpy as np
 
 def f(x):
     return np.exp(x) / np.sqrt(np.sin(x)**3 + np.cos(x)**3)
 
-print(f(1.5))
-
-x = HD64(1.5, 1.0, 1.0, 0.0)
+x = derive2(1.5)
 result = f(x)
-print('f(x)    = {}'.format(result.re))
-print('df/dx   = {}'.format(result.eps1))
-print('d2f/dx2 = {}'.format(result.eps1eps2))
+print('f(x)    = {}'.format(result.value))
+print('df/dx   = {}'.format(result.first_derivative))
+print('d2f/dx2 = {}'.format(result.second_derivative))
 ```

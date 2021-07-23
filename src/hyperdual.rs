@@ -18,7 +18,7 @@ use pyo3::prelude::*;
 /// >>> x = HD64(1.0, 0.0, 0.0, 0.0) # constructor
 /// >>> y = HD64.from_re(2.0)        # from real value
 /// >>> x + y
-/// 3 + 0ε1 + 0ε2 + 0ε1ε2
+/// 3 + [0]ε1 + [0]ε2 + [0]ε1ε2
 ///
 /// Compute partial derivatives of a function.
 ///

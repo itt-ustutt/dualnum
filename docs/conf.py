@@ -22,7 +22,7 @@ copyright = '2020, Philipp Rehner, Gernot Bauer'
 author = 'Philipp Rehner, Gernot Bauer'
 
 # The full version, including alpha/beta/rc tags
-release = '0.1.0'
+release = '0.2.0'
 
 
 # -- General configuration ---------------------------------------------------

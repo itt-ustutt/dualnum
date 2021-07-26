@@ -75,7 +75,7 @@ impl PyDual3Dual64 {
 impl_dual_num!(PyDual3Dual64, Dual3<Dual64, f64>, PyDual64);
 
 #[pyfunction]
-#[text_signature = "(x)"]
+#[pyo3(text_signature = "(x)")]
 fn derive3(x: &PyAny) -> PyResult<PyObject> {
     Python::with_gil(|py| {
         if let Ok(x) = x.extract::<f64>() {

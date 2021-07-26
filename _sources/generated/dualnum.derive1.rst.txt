@@ -1,0 +1,6 @@
+﻿dualnum.derive1
+===============
+
+.. currentmodule:: dualnum
+
+.. autofunction:: derive1

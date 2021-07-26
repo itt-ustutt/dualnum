@@ -1,0 +1,6 @@
+﻿dualnum.derive3
+===============
+
+.. currentmodule:: dualnum
+
+.. autofunction:: derive3

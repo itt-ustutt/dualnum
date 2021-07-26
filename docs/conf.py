@@ -12,18 +12,18 @@
 #
 import os
 import sys
+import dualnum
 
 sys.path.append(os.path.abspath(os.path.join(__file__, "../..")))
 sys.path.insert(0, os.path.abspath('.'))
 
 # -- Project information -----------------------------------------------------
 project = 'dualnum'
-copyright = '2020, Philipp Rehner, Gernot Bauer'
+copyright = '2021, Philipp Rehner, Gernot Bauer'
 author = 'Philipp Rehner, Gernot Bauer'
 
 # The full version, including alpha/beta/rc tags
-release = '0.2.0'
-
+release = dualnum.__version__
 
 # -- General configuration ---------------------------------------------------
 

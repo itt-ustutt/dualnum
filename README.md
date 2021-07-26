@@ -1,4 +1,4 @@
-# Hyper-Dual Numbers
+# dualnum
 
 [![documentation](https://img.shields.io/badge/docs-github--pages-blue)](https://itt-ustutt.github.io/dualnum/)
 [![PyPI version](https://badge.fury.io/py/dualnum.svg)](https://badge.fury.io/py/dualnum)
@@ -36,7 +36,7 @@ firefox _build/html/index.html
 ### Compute first and second derivative of a scalar valued function.
 
 ```python
-from dualnum import HyperDual64 as HD64, derive2
+from dualnum import derive2
 import numpy as np
 
 def f(x):

@@ -10,13 +10,26 @@ use pyo3::prelude::*;
 /// A dual number consists of
 /// a + b ε
 ///
-/// # Examples
+/// Examples
 ///
 /// >>> from dualnum import Dual64 as D64
 /// >>> x = D64(1.0, 0.0)
 /// >>> y = D64.from_re(2.0)
 /// >>> x + y
-/// 3 + 0ε
+/// 3 + [0]ε
+///
+/// First derivative of a function.
+///
+/// >>> from dualnum import Dual64 as D64, derive1
+/// >>> import numpy as np
+/// >>> x = derive1(4.0)
+/// >>> # this is equivalent to the above
+/// >>> x = D64(4.0, 1.0)
+/// >>> fx = x*x + np.sqrt(x)
+/// >>> fx.value
+/// 18
+/// >>> fx.first_derivative
+/// 8.25
 pub struct PyDual64 {
     pub _data: Dual64,
 }

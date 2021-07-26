@@ -23,7 +23,7 @@ jobs:
 
       - name: Install python dependencies
         run: |
-          python3 -m pip install virtualenv maturin sphinx
+          python3 -m pip install virtualenv maturin sphinx sphinx-rtd-theme
           virtualenv venv
           source venv/bin/activate
 

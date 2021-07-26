@@ -12,13 +12,28 @@ use pyo3::prelude::*;
 /// A hyper dual number consists of
 /// a + b ε1 + c ε2 + d ε1ε2
 ///
-/// # Examples
+/// Examples
 ///
-/// >>> from hyperdual import HyperDual64 as HD64
-/// >>> x = HD64(1.0, 0.0, 0.0, 0.0)
-/// >>> y = HD64.from_re(2.0)
+/// >>> from dualnum import HyperDual64 as HD64
+/// >>> x = HD64(1.0, 0.0, 0.0, 0.0) # constructor
+/// >>> y = HD64.from_re(2.0)        # from real value
 /// >>> x + y
-/// 3 + 0ε1 + 0ε2 + 0ε1ε2
+/// 3 + [0]ε1 + [0]ε2 + [0]ε1ε2
+///
+/// Compute partial derivatives of a function.
+///
+/// >>> from dualnum import HyperDual64 as HD64, derive2
+/// >>> x, y = derive2(3.0, 4.0)
+/// >>> # the above is equal to
+/// >>> x = HD64(3.0, 1.0, 0.0, 0.0)
+/// >>> y = HD64(4.0, 0.0, 1.0, 0.0)
+/// >>> fxy = x**2 * y - y**3
+/// >>> fxy.value
+/// -28
+/// >>> fxy.first_derivative
+/// (24.0, -39.0) # df/dx, df/dy
+/// fxy.second_derivative
+/// 6.0
 pub struct PyHyperDual64 {
     pub _data: HyperDual64,
 }

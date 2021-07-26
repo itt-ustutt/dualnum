@@ -1,6 +1,6 @@
 [package]
 name = "dualnum"
-version = "0.1.0"
+version = "0.2.0"
 authors = ["Gernot Bauer <bauer@itt.uni-stuttgart.de>",
            "Philipp Rehner <rehner@itt.uni-stuttgart.de>"]
 edition = "2018"
@@ -20,8 +20,8 @@ crate-type = ["cdylib", "lib"]
 # See more keys and their definitions at https://doc.rust-lang.org/cargo/reference/manifest.html
 
 [dependencies]
-num-dual = { version = "0.1" }
+num-dual = { version = "0.2" }
 
 [dependencies.pyo3]
-version = "0.13"
-features = ["extension-module", "abi3", "abi3-py36"]
+version = "0.14"
+features = ["extension-module", "abi3", "abi3-py36", "multiple-pymethods"]

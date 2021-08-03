@@ -194,6 +194,7 @@ macro_rules! impl_dual_num {
             pub fn sph_j0(&self) -> Self {
                 self._data.sph_j0().into()
             }
+
             #[inline]
             /// Computes the second spherical bessel function.
             pub fn sph_j1(&self) -> Self {

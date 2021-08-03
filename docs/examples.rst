@@ -147,7 +147,7 @@ We provide evaluations for a lot of useful mathematical expressions that are def
 Calling the same function with a hyper dual number and dual parts of 1
 yields the first and second derivatives. (ε1 and ε2 parts are identical)
 
->>> from dualnum import HyperDual64 as HD64
->>> x = HD64(1.5, 1.0, 1.0, 0.0)
+>>> from dualnum import derive2
+>>> x = derive2(1.5)
 >>> f(x)
-4.497780053946162 + 4.053427893898621ε1 + 4.053427893898621ε2 + 9.463073681596605ε1ε2
+4.497780053946162 + [4.053427893898621]ε1 + [4.053427893898621]ε2 + [9.463073681596605]ε1ε2

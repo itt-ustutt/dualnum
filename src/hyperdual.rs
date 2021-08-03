@@ -32,7 +32,7 @@ use pyo3::prelude::*;
 /// -28
 /// >>> fxy.first_derivative
 /// (24.0, -39.0) # df/dx, df/dy
-/// fxy.second_derivative
+/// >>> fxy.second_derivative
 /// 6.0
 pub struct PyHyperDual64 {
     pub _data: HyperDual64,

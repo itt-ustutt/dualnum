@@ -1,6 +1,6 @@
 [package]
 name = "dualnum"
-version = "0.2.1"
+version = "0.2.2"
 authors = ["Gernot Bauer <bauer@itt.uni-stuttgart.de>",
            "Philipp Rehner <rehner@itt.uni-stuttgart.de>"]
 edition = "2018"
